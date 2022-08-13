@@ -5,4 +5,8 @@ Selective pressures that trigger cancer formation and progression, shape the mut
 
 the mutation porfile of all proteins must be downloaded from :
 https://hive.biochemistry.gwu.edu/prd//biomuta/content/biomuta-master.csv
-in order to run the program
+in order to run the program.
+
+run main.py file to start processing the results.
+
+The software outputs an HTML file with aligned residues and probabilities after receiving a UniProt Protein name as input.
