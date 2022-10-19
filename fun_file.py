@@ -1078,7 +1078,6 @@ def get_pdb_chain(uni, pdb_id, chain_id):
         if item.endswith(".ent"):
             os.remove(os.path.join(work_dir, item))
 
-
 def iphi_rcsb_alfa(uni_list, link_database):
     database = pd.read_csv(link_database)
     if type(uni_list) is str:
@@ -1120,34 +1119,23 @@ def iphi_rcsb_alfa(uni_list, link_database):
                                x not in removed_uni_structures]  # primary_list[2] - removed_uni_structures
             primary_list[3] = [x for x in primary_list[3] if x not in removed_genes]  # primary_list[3] - removed_genes
 
-            try:
-                foldseek(primary_list[4])
+            foldseek(primary_list[4])
 
-                alignment_matrix = foldseek_alig_matrix('./m8/%s.m8' % primary_list[4])
-                result = result_matrix(primary_list[4], alignment_matrix, biomuta_profile, hotspot_profile,
-                                       primary_list)
-                wantedhot = hotspot_profile[(hotspot_profile
-                                             .apply(lambda r: r.astype('string').str.contains(i)
-                                                    .any(), axis=1))]
-                wantedmuta = biomuta_profile[(biomuta_profile
-                                              .apply(lambda r: r.astype('string').str.contains(i)
-                                                     .any(), axis=1))]
-                reu_compelet.append({'input_protein': primary_list[0],
-                                     'o_biomuta': wantedmuta['biomuta_profile'].tolist()[0],
-                                     'o_hotspot': wantedhot['hotspot_profile'].tolist()[0],
-                                     'p_positions': result[2]})
+            alignment_matrix = foldseek_alig_matrix('./m8/%s.m8' % primary_list[4])
+            result = result_matrix(primary_list[4], alignment_matrix, biomuta_profile, hotspot_profile,
+                                   primary_list)
+            wantedhot = hotspot_profile[(hotspot_profile
+                                         .apply(lambda r: r.astype('string').str.contains(i)
+                                                .any(), axis=1))]
+            wantedmuta = biomuta_profile[(biomuta_profile
+                                          .apply(lambda r: r.astype('string').str.contains(i)
+                                                 .any(), axis=1))]
+            reu_compelet.append({'input_protein': primary_list[0],
+                                 'o_biomuta': wantedmuta['biomuta_profile'].tolist()[0],
+                                 'o_hotspot': wantedhot['hotspot_profile'].tolist()[0],
+                                 'p_positions': result[2]})
 
-            except:
-                wantedhot = hotspot_profile[(hotspot_profile
-                                             .apply(lambda r: r.astype('string').str.contains(i)
-                                                    .any(), axis=1))]
-                wantedmuta = biomuta_profile[(biomuta_profile
-                                              .apply(lambda r: r.astype('string').str.contains(i)
-                                                     .any(), axis=1))]
-                reu_compelet.append({'input_protein': primary_list[0],
-                                     'o_biomuta': wantedmuta['biomuta_profile'].tolist()[0],
-                                     'o_hotspot': wantedhot['hotspot_profile'].tolist()[0],
-                                     'p_positions': None})
+
         except:
             wantedhot = hotspot_profile[(hotspot_profile
                                          .apply(lambda r: r.astype('string').str.contains(i)
@@ -1159,9 +1147,8 @@ def iphi_rcsb_alfa(uni_list, link_database):
                                  'o_biomuta': wantedmuta['biomuta_profile'].tolist()[0],
                                  'o_hotspot': wantedhot['hotspot_profile'].tolist()[0],
                                  'p_positions': None})
-        reu_compelet = pd.DataFrame(reu_compelet)
-        reu_compelet.to_pickle('./reu_complete_ALFA.pkl')
-      
+    reu_compelet = pd.DataFrame(reu_compelet)
+    reu_compelet.to_pickle('./reu_complete_ALFA.pkl')
 
     return reu_compelet
 
