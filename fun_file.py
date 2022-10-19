@@ -412,6 +412,18 @@ def result_matrix(uniprot_input_protein, alinment_matrix, biomuta_profile, hotsp
     result = result.iloc[:, [0, 1, -2, -1]]
     b = result['residue_number'].tolist()
     pd.set_option('display.float_format', '{:.3g}'.format)
+    html1 = matrix.to_html()
+    html2 = result.to_html()
+    headers_html = "Input Protein : {},<br> Family of Input Protein : {},<br> Uniprot ID's of Family : {},<br> Gene Names of Family : {}<br>".format(
+        primary_list[0], primary_list[1], primary_list[2], primary_list[3])
+    text_file = open("%s.html" % uniprot_input_protein, "w")
+    text_file.write(headers_html)
+    text_file.write('matrix of alignment<br>')
+    text_file.write(html1)
+    text_file.write(
+        'result residues,<br> thresholds = {} - {},<br> result residue : {}<br>'.format(threshold, threshold1, b))
+    text_file.write(html2)
+    text_file.close()
     return [matrix, result, b, score_matrix, probability_matrix]
 
 
@@ -1069,6 +1081,8 @@ def get_pdb_chain(uni, pdb_id, chain_id):
 
 def iphi_rcsb_alfa(uni_list, link_database):
     database = pd.read_csv(link_database)
+    if type(uni_list) is str:
+        uni_list = list(uni_list)
     reu_compelet = []
     reu_compelet1 = []
     for i in uni_list:
@@ -1147,68 +1161,9 @@ def iphi_rcsb_alfa(uni_list, link_database):
                                  'p_positions': None})
         reu_compelet = pd.DataFrame(reu_compelet)
         reu_compelet.to_pickle('./reu_complete_ALFA.pkl')
-        try:
-            ############################
+      
 
-            # download from RCSB
-
-            clear_folder(os.getcwd() + '/pdb_files')
-            look_up = pd.read_pickle('./look_up.pkl')
-            rcsb_found = []
-            for j in primary_list[2]:
-                for k in look_up.iloc():
-                    if j in k['UNI']:
-                        rcsb_found.append({'UNI': j, 'PDB': k['PDB'], 'CHAIN': k['CHAIN']})
-            rcsb_found = pd.DataFrame(rcsb_found)
-            for e in rcsb_found.iloc():
-                get_pdb_chain(e['UNI'], e['PDB'], e['CHAIN'])
-            primary_list[2] = rcsb_found['UNI'].tolist()  # primary_list[2] - removed
-            primary_list[3] = rcsb_found['UNI'].tolist()  # primary_list[3] - removed_genes
-
-            ########################
-            try:
-                foldseek(primary_list[4])
-
-                alignment_matrix = foldseek_alig_matrix('./m8/%s.m8' % primary_list[4])
-                result = result_matrix(primary_list[4], alignment_matrix, biomuta_profile, hotspot_profile,
-                                       primary_list)
-                wantedhot = hotspot_profile[(hotspot_profile
-                                             .apply(lambda r: r.astype('string').str.contains(i)
-                                                    .any(), axis=1))]
-                wantedmuta = biomuta_profile[(biomuta_profile
-                                              .apply(lambda r: r.astype('string').str.contains(i)
-                                                     .any(), axis=1))]
-                reu_compelet.append({'input_protein': primary_list[0],
-                                     'o_biomuta': wantedmuta['biomuta_profile'].tolist()[0],
-                                     'o_hotspot': wantedhot['hotspot_profile'].tolist()[0],
-                                     'p_positions': result[2]})
-
-            except:
-                wantedhot = hotspot_profile[(hotspot_profile
-                                             .apply(lambda r: r.astype('string').str.contains(i)
-                                                    .any(), axis=1))]
-                wantedmuta = biomuta_profile[(biomuta_profile
-                                              .apply(lambda r: r.astype('string').str.contains(i)
-                                                     .any(), axis=1))]
-                reu_compelet1.append({'input_protein': primary_list[0],
-                                      'o_biomuta': wantedmuta['biomuta_profile'].tolist()[0],
-                                      'o_hotspot': wantedhot['hotspot_profile'].tolist()[0],
-                                      'p_positions': None})
-        except:
-            wantedhot = hotspot_profile[(hotspot_profile
-                                         .apply(lambda r: r.astype('string').str.contains(i)
-                                                .any(), axis=1))]
-            wantedmuta = biomuta_profile[(biomuta_profile
-                                          .apply(lambda r: r.astype('string').str.contains(i)
-                                                 .any(), axis=1))]
-            reu_compelet1.append({'input_protein': primary_list[0],
-                                  'o_biomuta': wantedmuta['biomuta_profile'].tolist()[0],
-                                  'o_hotspot': wantedhot['hotspot_profile'].tolist()[0],
-                                  'p_positions': None})
-        reu_compelet1 = pd.DataFrame(reu_compelet1)
-        reu_compelet1.to_pickle('./reu_complete_ALFA.pkl')
-
-    return reu_compelet, reu_compelet1
+    return reu_compelet
 
 
 def protein_length(uniprot_id):
