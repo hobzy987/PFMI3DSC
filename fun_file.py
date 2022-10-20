@@ -1148,7 +1148,7 @@ def iphi_rcsb_alfa(uni_list, link_database):
                                  'o_hotspot': wantedhot['hotspot_profile'].tolist()[0],
                                  'p_positions': None})
     reu_compelet = pd.DataFrame(reu_compelet)
-    reu_compelet.to_pickle('./pkl/reu_complete_%s.pkl' % i)
+    reu_compelet.to_csv('./reu_complete_%s.csv' % i)
 
     return reu_compelet
 
