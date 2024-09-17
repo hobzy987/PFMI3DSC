@@ -8,3 +8,4 @@ Selective pressures that trigger cancer formation and progression, shape the mut
 run main.py file to start processing the results.
 
 The software outputs an HTML file with aligned residues and probabilities after receiving a UniProt Protein ACCID as input.
+ the file getmutation_allstudies_cbioportal.ipynb extracts all mutations from cbioportal and stores them in a single file 
